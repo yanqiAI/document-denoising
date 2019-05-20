@@ -6,6 +6,7 @@ test original size image;
 2. test
 3. merge results
 '''
+
 import cv2
 import numpy as np
 import os
