@@ -1,4 +1,4 @@
-This repository contains the full source codes which are using to denoising for document dirty images.
+This repository contains the full source codes which are used to denoise from the document dirty image.
 
 ## Pre-requisites
 
