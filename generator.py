@@ -40,7 +40,7 @@ class DeblurImageGenerator(Sequence):
             clear_image = cv2.imread(clear_image_path)
 
             # add clear_mask
-            ret, clear_image_mask =  cv2.threshold(clear_image, 127, 1, cv2.THRESH_BINARY)
+            ret, clear_image_mask =  cv2.threshold(clear_image, 35, 1, cv2.THRESH_BINARY)
             clear_image_foreground = clear_image * (1 - clear_image_mask)
             clear_image_background = clear_image * clear_image_mask
 
@@ -52,16 +52,13 @@ class DeblurImageGenerator(Sequence):
                 j = np.random.randint(w - image_size + 1)
                 blur_patch  = blur_image[i:i + image_size, j:j + image_size]
 
-
                 # add clear_foreground_path and clear_background_path
                 clear_foreground_patch = clear_image_foreground[i:i + image_size, j:j + image_size]
                 clear_background_patch = clear_image_background[i:i + image_size, j:j + image_size]
                 clear_patch = np.concatenate((clear_foreground_patch, clear_background_patch), axis=-1)
 
-
                 x[sample_id] = blur_patch
                 y[sample_id] = clear_patch
-    
 
                 sample_id += 1
                 if sample_id == batch_size:
@@ -86,10 +83,9 @@ class ValGenerator(Sequence):
             y = cv2.imread(clear_image_path)
 
             # add clear_mask
-            ret, y_mask =  cv2.threshold(y, 127, 1, cv2.THRESH_BINARY)
+            ret, y_mask =  cv2.threshold(y, 35, 1, cv2.THRESH_BINARY)
             y_fg = y * (1 - y_mask)
             y_bg = y * y_mask
-
 
             h, w, _ = x.shape
             x = x[:(h // 16) * 16, :(w // 16) * 16]  # for stride (maximum 16)
