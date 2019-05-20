@@ -49,12 +49,6 @@ def get_args():
                         help="weight file for restart")
     parser.add_argument("--output_path", type=str, default="checkpoints",
                         help="checkpoint dir")
-    # parser.add_argument("--source_noise_model", type=str, default="clean",
-    #                     help="noise model for source images")
-    # parser.add_argument("--target_noise_model", type=str, default="clean",
-    #                     help="noise model for target images")
-    # parser.add_argument("--val_noise_model", type=str, default="clean",
-    #                     help="noise model for validation source images")
     parser.add_argument("--model", type=str, default="srresnet",
                         help="model architecture ('srresnet' or 'srresnet+' or 'unet')")
     args = parser.parse_args()
@@ -90,23 +84,9 @@ def main():
     generator = DeblurImageGenerator(blur_image_dir, clear_image_dir, batch_size=batch_size,
                                     image_size=image_size)
 
-    # model outputs====>denoising results
-    #clear_outputs = model.outputs
-
-    # inputs labels
-    #train_image_patch = generator.flow_from_directory(...)
-
-    #model.compile(optimizer=opt, loss=loss_type, metrics=[PSNR])
     model.compile(optimizer=opt,
                   loss=L1_loss,
                   metrics=[PSNR, SSIM])
-
-    # source_noise_model = get_noise_model(args.source_noise_model)
-    # target_noise_model = get_noise_model(args.target_noise_model)
-    # val_noise_model = get_noise_model(args.val_noise_model)
-
-    # generator = NoisyImageGenerator(blur_image_dir, source_noise_model, target_noise_model, batch_size=batch_size,
-    #                                 image_size=image_size)
 
     generator = DeblurImageGenerator(blur_image_dir, clear_image_dir, batch_size=batch_size,
                                     image_size=image_size)
@@ -122,10 +102,10 @@ def main():
                                      save_best_only=True))
 
     callbacks.append(TensorBoard(log_dir='./logs',
-                                 histogram_freq=0,  # 按照何等频率（epoch）来计算直方图，0为不计算
-                                 write_graph=True,  # 是否存储网络结构图
-                                 write_grads=True,  # 是否可视化梯度直方图
-                                 write_images=True,  # 是否可视化参数
+                                 histogram_freq=0,
+                                 write_graph=True, 
+                                 write_grads=True,  
+                                 write_images=True,  
                                  embeddings_freq=0,
                                  embeddings_layer_names=None,
                                  embeddings_metadata=None)
