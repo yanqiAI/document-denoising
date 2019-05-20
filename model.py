@@ -39,6 +39,7 @@ class UpdateAnnealingParameter(Callback):
 '''
 add vgg loss
 '''
+
 def preproces_vgg(x):
     # scale from [-1, 1] to [0, 255]
     x += 1.
@@ -134,7 +135,6 @@ def get_model(model_name="srresnet"):
     else:
         raise ValueError("model_name should be 'srresnet'or 'unet'")
 
-
 # SRResNet
 def get_srresnet_model(input_channel_num=3, feature_dim=64, resunit_num=16):
     def _residual_block(inputs):
@@ -149,8 +149,6 @@ def get_srresnet_model(input_channel_num=3, feature_dim=64, resunit_num=16):
 
     inputs = Input(shape=(None, None, input_channel_num))
 
-    # add mask
-    #mask = Input(shape=(None, None, input_channel_num))
 
     x = Conv2D(feature_dim, (3, 3), padding="same", kernel_initializer="he_normal")(inputs)
     x = PReLU(shared_axes=[1, 2])(x)
@@ -163,12 +161,7 @@ def get_srresnet_model(input_channel_num=3, feature_dim=64, resunit_num=16):
     x = Add()([x, x0])
     x = Conv2D(input_channel_num * 2, (3, 3), padding="same", kernel_initializer="he_normal")(x)
 
-    # # seperate x to foreground and background
-    # x_fg = x * (1 - mask)
-    # x_bg = x * mask
 
-    #Output tensors to a Model must be the output of a Keras `Layer`
-    # model = Model(inputs=[inputs, mask], outputs=[x_fg, x_bg])
     model = Model(inputs=inputs, outputs=x)
     model.summary()
     return model
@@ -206,7 +199,6 @@ def get_srresnet_model_plus(input_channel_num=3, feature_dim=96, resunit_num=16)
 
     return model
 
-
 # UNet: code from https://github.com/pietz/unet-keras
 def get_unet_model(input_channel_num=3, out_ch=3, start_ch=64, depth=4, inc_rate=2., activation='relu',
          dropout=0.5, batchnorm=False, maxpool=True, upconv=True, residual=False):
@@ -243,12 +235,9 @@ def get_unet_model(input_channel_num=3, out_ch=3, start_ch=64, depth=4, inc_rate
 
     return model
 
-
 def main():
-    # model = get_model()
     model = get_model("unet")
     model.summary()
-
 
 if __name__ == '__main__':
     main()
